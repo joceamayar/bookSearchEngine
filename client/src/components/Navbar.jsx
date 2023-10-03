@@ -11,15 +11,15 @@ import Auth from '../utils/auth';
 const AppNavbar = () => {
   // set modal display state
   const [showModal, setShowModal] = useState(false);
-  // const {loading, data} = useQuery(
-  //   gql`
-  //   query secretPhrase {
-  //     secretPhrase {
-  //       word
-  //     }
-  //   }
-  //   `
-  // )
+  const {loading, data} = useQuery(
+    gql`
+    query secretPhrase {
+      secretPhrase {
+        word
+      }
+    }
+    `
+  )
 
   return (
     <>

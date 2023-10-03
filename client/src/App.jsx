@@ -13,7 +13,7 @@ import Navbar from './components/Navbar';
 
 //All API resquest will go to /graphql (it has only one end point)
 const httpLink = createHttpLink({
-  uri: 'http://127.0.0.1:3001/graphql',
+  uri: 'http://3001/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
