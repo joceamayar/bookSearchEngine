@@ -1,25 +1,14 @@
 import { useState } from 'react';
+import { Container, Modal, Nav, Navbar, Tab } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, Container, Modal, Tab } from 'react-bootstrap';
-import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
-import {useQuery} from "@apollo/client"
-import { gql } from '@apollo/client';
+import SignUpForm from './SignupForm';
 
 import Auth from '../utils/auth';
 
 const AppNavbar = () => {
   // set modal display state
   const [showModal, setShowModal] = useState(false);
-  const {loading, data} = useQuery(
-    gql`
-    query secretPhrase {
-      secretPhrase {
-        word
-      }
-    }
-    `
-  )
 
   return (
     <>
@@ -31,9 +20,6 @@ const AppNavbar = () => {
           <Navbar.Toggle aria-controls='navbar' />
           <Navbar.Collapse id='navbar' className='d-flex flex-row-reverse'>
             <Nav className='ml-auto d-flex'>
-              <Nav.Link as={Link} to='/'>
-                {loading?"":data}
-              </Nav.Link>
               <Nav.Link as={Link} to='/'>
                 Search For Books
               </Nav.Link>

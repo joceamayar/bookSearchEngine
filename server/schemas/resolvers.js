@@ -1,13 +1,15 @@
 const { Book, User } = require('../models');
-const { signToken, AuthenticationError } = require('../utils/auth');
+const { signToken } = require('../utils/auth');
+const { GraphQLError } = require('graphql');
 
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
-      if (context.user) {
+      console.log(context)
+      if (context?.user) {
         return await User.findOne({ _id: context.user._id }).populate('books');
       }
-      throw AuthenticationError;
+      throw new GraphQLError('Authentication Error');
     }
   },
   Mutation: {
@@ -21,13 +23,13 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw AuthenticationError;
+        throw new GraphQLError('Authentication Error');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new GraphQLError('Authentication Error');
       }
 
       const token = signToken(user);
@@ -66,10 +68,10 @@ const resolvers = {
           { _id: context.user._id },
           { $pull: { books: book._id } }
         );
-// { new: true }
+        // { new: true }
         return book;
       }
-      throw AuthenticationError;
+      throw new GraphQLError('Authentication Error');
     },
   }
 }
