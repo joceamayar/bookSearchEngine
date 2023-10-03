@@ -19,13 +19,19 @@ const SearchBooks = () => {
   const [searchInput, setSearchInput] = useState('');
 
   // create state to hold saved bookId values
-  const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const [savedBookIds, setSavedBookIds] = useState(() => {
+    // Try to load savedBookIds from localStorage when the component mounts
+    const savedData = localStorage.getItem('savedBookIds');
+    return savedData ? JSON.parse(savedData) : getSavedBookIds();
+  });
+
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
-    return () => saveBookIds(savedBookIds);
-  });
+    return () => saveBookIds('savedBookIds', JSON.stringify(savedBookIds));
+
+}, [savedBookIds]);
 
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {

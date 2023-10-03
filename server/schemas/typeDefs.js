@@ -4,11 +4,12 @@ const typeDefs = `
     username: String!
     email: String!
     password: String!
+    savedBooks: [Book]
   }
 
-  type Book {
+   type Book {
     _id: ID!
-    authors: String
+    authors: [String]
     description: String!
     bookId: String!
     images: String
@@ -21,8 +22,11 @@ const typeDefs = `
     user: User
   }
 
+  type WordBlock {
+    word:String
+  }
+
   type Query {
-    users: [User] 
     user( _id: ID!, username: String!): User
     me: User
   }
@@ -32,8 +36,8 @@ const typeDefs = `
     login(email: String!, password: String!): Auth
 
     saveBook ( _id: ID!,  authors: String,  description: String!, bookId: String!, images: String, link: String, title: String!):Book
-    removeBook( _id: ID!, authors: String,  description: String!,  bookId: String!, images: String, link: String, title: String!): Book
-
+    removeBook( _id: ID!, authors: String,  description: String!,  bookId: String!, images: String, link: String, title: String!)
+    :Book
   }
 `;
 module.exports = typeDefs;
