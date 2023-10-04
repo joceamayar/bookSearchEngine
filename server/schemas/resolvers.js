@@ -1,17 +1,18 @@
 const { Book, User } = require('../models');
+const { countDocuments } = require('../models/User');
 const { signToken } = require('../utils/auth');
 const { GraphQLError } = require('graphql');
 
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
-      console.log(context)
       if (context?.user) {
-        return await User.findOne({ _id: context.user._id }).populate('books');
+        return await User.findOne({ _id: context.user._id }).populate('savedBooks');
       }
       throw new GraphQLError('Authentication Error');
     }
   },
+
   Mutation: {
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
@@ -37,42 +38,33 @@ const resolvers = {
       return { token, user };
     },
 
-    saveBook: async (parent, { _id, authors, description, bookId, images, link, title }, context) => {
-      try {
-        const book = await Book({
-          _id,
-          authors,
-          description,
-          bookId,
-          images,
-          link,
-          title,
-        });
-
-        await book.save();
-        return book;
-      } catch (error) {
-        console.error('Error saving book:', error);
-        throw new Error('Error saving book');
+    saveBook: async (parent, book, context) => {
+      if (context.user) {
+        // Find a user and update the savedBooks
+        const user = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: book } },
+          { new: true }  // return updated user
+        );
+        return user;
       }
+
+      // Authentication error if user is not present in context
+      throw new AuthenticationError('You need to be logged in!');
     },
 
-    removeBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { book }, context) => {
       if (context.user) {
-        const book = await Book.findOneAndDelete({
-          _id: bookId,
-          book: context.user.username,
-        });
-
-        await User.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { books: book._id } }
+          { $pull: { books: book._id } },
+          { new: true }
         );
-        // { new: true }
-        return book;
+        return user;
       }
       throw new GraphQLError('Authentication Error');
     },
   }
-}
+};
+
 module.exports = resolvers;

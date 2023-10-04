@@ -12,7 +12,7 @@ const typeDefs = `
     authors: [String]
     description: String!
     bookId: String!
-    images: String
+    image: String
     link: String
     title: String!
   }
@@ -22,12 +22,7 @@ const typeDefs = `
     user: User
   }
 
-  type WordBlock {
-    word:String
-  }
-
   type Query {
-    user( _id: ID!, username: String!): User
     me: User
   }
 
@@ -35,9 +30,8 @@ const typeDefs = `
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
 
-    saveBook ( _id: ID!,  authors: String,  description: String!, bookId: String!, images: String, link: String, title: String!):Book
-    removeBook( _id: ID!, authors: String,  description: String!,  bookId: String!, images: String, link: String, title: String!)
-    :Book
+    saveBook (authors: [String], description: String!, bookId: String!, image: String, link: String, title: String!): User
+    removeBook( _id: ID!): User
   }
 `;
 module.exports = typeDefs;
